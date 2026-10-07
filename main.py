@@ -53,9 +53,13 @@ def update():
     global x, y, state, frame
 
     if dx != 0 or dy != 0:
-        state = MOVE
+        if state != MOVE:
+            state = MOVE
+            frame = 0
     else:
-        state = IDLE
+        if state != IDLE:
+            state = IDLE
+            frame = 0
 
     x += dx * SPEED
     y += dy * SPEED
