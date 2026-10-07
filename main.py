@@ -4,7 +4,7 @@ TUK_WIDTH, TUK_HEIGHT = 1280, 1024
 SPEED = 10
 
 IDLE, MOVE = 0, 1
-LEFT, RIGHT, UP, DOWN = 0, 1, 2, 3
+LEFT, RIGHT = 0, 1
 
 running = True
 x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
@@ -33,10 +33,8 @@ def handle_events():
                 direction = LEFT
             elif event.key == SDLK_UP:
                 dy += 1
-                direction = UP
             elif event.key == SDLK_DOWN:
                 dy -= 1
-                direction = DOWN
             elif event.key == SDLK_ESCAPE:
                 running = False
         elif event.type == SDL_KEYUP:
@@ -68,14 +66,14 @@ def draw():
     clear_canvas()
     tuk_ground.draw(TUK_WIDTH // 2, TUK_HEIGHT // 2)
 
-    if state == IDLE:
-        if direction == LEFT:
-            character.clip_draw(frame * 100, 200, 100, 100, x, y)
-        else:
+    if direction == RIGHT:
+        if state == IDLE:
             character.clip_draw(frame * 100, 300, 100, 100, x, y)
-    else:
-        if direction == RIGHT or direction == UP:
+        else:
             character.clip_draw(frame * 100, 100, 100, 100, x, y)
+    else:
+        if state == IDLE:
+            character.clip_draw(frame * 100, 200, 100, 100, x, y)
         else:
             character.clip_draw(frame * 100, 0, 100, 100, x, y)
 
