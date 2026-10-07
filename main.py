@@ -4,11 +4,11 @@ TUK_WIDTH, TUK_HEIGHT = 1280, 1024
 SPEED = 10
 
 IDLE, MOVE = 0, 1
-LEFT, RIGHT = 0, 1
+LEFT, RIGHT, UP, DOWN = 0, 1, 2, 3
 
 running = True
 x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
-dx = 0
+dx, dy = 0, 0
 direction = RIGHT
 state = IDLE
 frame = 0
@@ -18,7 +18,7 @@ character = None
 
 
 def handle_events():
-    global running, dx, direction
+    global running, dx, dy, direction
 
     events = get_events()
     for event in events:
@@ -31,6 +31,12 @@ def handle_events():
             elif event.key == SDLK_LEFT:
                 dx -= 1
                 direction = LEFT
+            elif event.key == SDLK_UP:
+                dy += 1
+                direction = UP
+            elif event.key == SDLK_DOWN:
+                dy -= 1
+                direction = DOWN
             elif event.key == SDLK_ESCAPE:
                 running = False
         elif event.type == SDL_KEYUP:
@@ -38,17 +44,22 @@ def handle_events():
                 dx -= 1
             elif event.key == SDLK_LEFT:
                 dx += 1
+            elif event.key == SDLK_UP:
+                dy -= 1
+            elif event.key == SDLK_DOWN:
+                dy += 1
 
 
 def update():
-    global x, state, frame
+    global x, y, state, frame
 
-    if dx != 0:
+    if dx != 0 or dy != 0:
         state = MOVE
     else:
         state = IDLE
 
     x += dx * SPEED
+    y += dy * SPEED
 
     frame = (frame + 1) % 8
 
@@ -57,14 +68,14 @@ def draw():
     clear_canvas()
     tuk_ground.draw(TUK_WIDTH // 2, TUK_HEIGHT // 2)
 
-    if direction == RIGHT:
-        if state == IDLE:
-            character.clip_draw(frame * 100, 300, 100, 100, x, y)
-        else:
-            character.clip_draw(frame * 100, 100, 100, 100, x, y)
-    else:
-        if state == IDLE:
+    if state == IDLE:
+        if direction == LEFT:
             character.clip_draw(frame * 100, 200, 100, 100, x, y)
+        else:
+            character.clip_draw(frame * 100, 300, 100, 100, x, y)
+    else:
+        if direction == RIGHT or direction == UP:
+            character.clip_draw(frame * 100, 100, 100, 100, x, y)
         else:
             character.clip_draw(frame * 100, 0, 100, 100, x, y)
 
