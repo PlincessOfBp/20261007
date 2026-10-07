@@ -1,9 +1,16 @@
 from pico2d import *
 
 TUK_WIDTH, TUK_HEIGHT = 1280, 1024
+SPEED = 10
+
+IDLE, MOVE = 0, 1
+LEFT, RIGHT = 0, 1
 
 running = True
 x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
+dx = 0
+direction = RIGHT
+state = IDLE
 frame = 0
 
 tuk_ground = None
@@ -11,25 +18,56 @@ character = None
 
 
 def handle_events():
-    global running
+    global running, dx, direction
 
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             running = False
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
+        elif event.type == SDL_KEYDOWN:
+            if event.key == SDLK_RIGHT:
+                dx += 1
+                direction = RIGHT
+            elif event.key == SDLK_LEFT:
+                dx -= 1
+                direction = LEFT
+            elif event.key == SDLK_ESCAPE:
+                running = False
+        elif event.type == SDL_KEYUP:
+            if event.key == SDLK_RIGHT:
+                dx -= 1
+            elif event.key == SDLK_LEFT:
+                dx += 1
 
 
 def update():
-    global frame
+    global x, state, frame
+
+    if dx != 0:
+        state = MOVE
+    else:
+        state = IDLE
+
+    x += dx * SPEED
+
     frame = (frame + 1) % 8
 
 
 def draw():
     clear_canvas()
     tuk_ground.draw(TUK_WIDTH // 2, TUK_HEIGHT // 2)
-    character.clip_draw(frame * 100, 300, 100, 100, x, y)
+
+    if direction == RIGHT:
+        if state == IDLE:
+            character.clip_draw(frame * 100, 300, 100, 100, x, y)
+        else:
+            character.clip_draw(frame * 100, 100, 100, 100, x, y)
+    else:
+        if state == IDLE:
+            character.clip_draw(frame * 100, 200, 100, 100, x, y)
+        else:
+            character.clip_draw(frame * 100, 0, 100, 100, x, y)
+
     update_canvas()
 
 
