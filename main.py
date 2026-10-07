@@ -52,6 +52,7 @@ def handle_events():
 def update():
     global x, y, state, frame
 
+    #--- 상태 전환 (입력이 있으면 MOVE, 없으면 IDLE)
     if dx != 0 or dy != 0:
         if state != MOVE:
             state = MOVE
@@ -61,9 +62,11 @@ def update():
             state = IDLE
             frame = 0
 
+    #--- 이동
     x += dx * SPEED
     y += dy * SPEED
 
+    #--- 화면 경계 처리
     if x < HALF:
         x = HALF
     if x > TUK_WIDTH - HALF:
@@ -73,13 +76,17 @@ def update():
     if y > TUK_HEIGHT - HALF:
         y = TUK_HEIGHT - HALF
 
+    #--- 애니메이션 프레임 갱신
     frame = (frame + 1) % 8
 
 
 def draw():
     clear_canvas()
+
+    #--- 배경 출력
     tuk_ground.draw(TUK_WIDTH // 2, TUK_HEIGHT // 2)
 
+    #--- 소년 출력 (오른쪽: 300/100, 왼쪽: 200/0)
     if direction == RIGHT:
         if state == IDLE:
             character.clip_draw(frame * 100, 300, 100, 100, x, y)
