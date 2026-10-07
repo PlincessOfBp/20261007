@@ -2,6 +2,7 @@ from pico2d import *
 
 TUK_WIDTH, TUK_HEIGHT = 1280, 1024
 SPEED = 10
+HALF = 50
 
 IDLE, MOVE = 0, 1
 LEFT, RIGHT = 0, 1
@@ -58,6 +59,15 @@ def update():
 
     x += dx * SPEED
     y += dy * SPEED
+
+    if x < HALF:
+        x = HALF
+    if x > TUK_WIDTH - HALF:
+        x = TUK_WIDTH - HALF
+    if y < HALF:
+        y = HALF
+    if y > TUK_HEIGHT - HALF:
+        y = TUK_HEIGHT - HALF
 
     frame = (frame + 1) % 8
 
