@@ -4,6 +4,7 @@ TUK_WIDTH, TUK_HEIGHT = 1280, 1024
 
 running = True
 x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
+frame = 0
 
 tuk_ground = None
 character = None
@@ -20,10 +21,15 @@ def handle_events():
             running = False
 
 
+def update():
+    global frame
+    frame = (frame + 1) % 8
+
+
 def draw():
     clear_canvas()
     tuk_ground.draw(TUK_WIDTH // 2, TUK_HEIGHT // 2)
-    character.clip_draw(0, 300, 100, 100, x, y)
+    character.clip_draw(frame * 100, 300, 100, 100, x, y)
     update_canvas()
 
 
@@ -33,6 +39,7 @@ character = load_image('animation_sheet.png')
 
 while running:
     handle_events()
+    update()
     draw()
     delay(0.05)
 
